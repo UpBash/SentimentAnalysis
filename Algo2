@@ -1,0 +1,35 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Load the first 50 lines of your dataset (assuming 'comments' is the column containing text and 'ratings' is the ratings column)
+data = pd.read_csv(r"C:\Users\panos\OneDrive\Υπολογιστής\M.sc\Newro\Assignment Sgou\amazon_review_full_csv\train.csv", nrows=250)
+
+
+data = pd.DataFrame({
+    'rating': data.iloc[:, 0] ,     # First column from the CSV file ('rating')
+    'comments': data.iloc[:, 2]    # Third column from the CSV file ('comment')
+})
+# Data preprocessing (cleaning, tokenization, etc.) can be done here
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(data['comments'], data['rating'], test_size=0.2, random_state=42)
+
+# TF-IDF Vectorization
+tfidf_vectorizer = TfidfVectorizer(max_features=5000)  # You can adjust max_features
+X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+X_test_tfidf = tfidf_vectorizer.transform(X_test)
+
+# Choose a classifier (Example: Naive Bayes)
+classifier = MultinomialNB()
+classifier.fit(X_train_tfidf, y_train)
+
+# Predict ratings for test set
+predictions = classifier.predict(X_test_tfidf)
+
+# Evaluate model performance
+print("Accuracy:", accuracy_score(y_test, predictions))
+print("Classification Report:")
+print(classification_report(y_test, predictions, zero_division=1))
