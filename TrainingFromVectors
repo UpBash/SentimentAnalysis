@@ -1,0 +1,24 @@
+from collections import defaultdict
+
+# Assuming 'preprocessed_corpus' is the preprocessed tokenized corpus
+
+# Constructing corpus (list of tokenized sentences)
+corpus = preprocessed_corpus
+
+# Building vocabulary
+vocabulary = set(word for sentence in corpus for word in sentence)
+
+# Generating training data (word pairs within a window)
+window_size = 2  # Example window size
+
+training_data = []
+
+for sentence in corpus:
+    for i, target_word in enumerate(sentence):
+        for j in range(max(0, i - window_size), min(len(sentence), i + window_size + 1)):
+            if j != i:
+                context_word = sentence[j]
+                training_data.append((target_word, context_word))
+
+# Sample training data (word pairs)
+print(training_data[:10])  # Displaying the first 10 word pairs
