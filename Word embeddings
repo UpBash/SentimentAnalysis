@@ -1,0 +1,40 @@
+from gensim.models import Word2Vec
+
+# Assuming 'corpus' is the list of tokenized sentences used for training the Word2Vec model
+# Initialize and train the Word2Vec model
+word2vec_model = Word2Vec(sentences=corpus, vector_size=100, window=5, min_count=1, workers=4)
+
+# Get word vectors
+word_vectors = word2vec_model.wv
+
+# Retrieve word embeddings for specific words
+word_embedding_computer = word_vectors['computer']
+word_embedding_science = word_vectors['science']
+# Add more words as needed
+#.............
+
+# Save word vectors to a file
+word_vectors.save('word_embeddings.kv')
+
+
+
+'''
+Alternatively, you can use pre-trained word embeddings
+(like Word2Vec, GloVe, FastText) available
+for numerous languages and domains to avoid training your own models.
+'''
+
+#check out word arithmetics
+
+from gensim.models import Word2Vec
+
+# Assuming 'corpus' is the list of tokenized sentences used for training the Word2Vec model
+# Initialize and train the Word2Vec model
+word2vec_model = Word2Vec(sentences=corpus, vector_size=100, window=5, min_count=1, workers=4)
+
+# Get word vectors
+word_vectors = word2vec_model.wv
+
+# Perform word analogy
+result = word_vectors.most_similar(positive=['buy', 'like'], negative=['cost'], topn=1)
+print("Result of analogy (buy - cost + like):", result)
