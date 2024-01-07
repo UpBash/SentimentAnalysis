@@ -1,0 +1,23 @@
+from gensim.models import Word2Vec
+
+# Assuming 'training_data' and 'vocabulary' are obtained from previous steps
+
+# Define Word2Vec model parameters
+vector_size = 100  # Dimensionality of the word vectors
+window_size = 5  # Context window size
+min_count = 1  # Minimum frequency of a word to be considered in the model
+workers = 4  # Number of CPU cores to use for training
+
+# Initialize and train the Word2Vec model
+word2vec_model = Word2Vec(sentences=corpus, vector_size=vector_size, window=window_size, min_count=min_count, workers=workers)
+
+# Get word vectors
+word_vectors = word2vec_model.wv
+
+# Get vector for a specific word (for example, 'sample')
+sample_vector = word_vectors['product']
+print("Vector representation of 'product':", sample_vector)
+
+# Find similar words to 'sample'
+similar_words = word_vectors.most_similar('product', topn=5)
+print("Words similar to 'product':", similar_words)
