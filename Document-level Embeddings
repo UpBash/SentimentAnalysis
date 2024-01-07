@@ -1,0 +1,56 @@
+
+#doc to turn to vectors
+data = pd.read_csv(r"C:\Users\panos\OneDrive\Υπολογιστής\M.sc\Newro\Assignment Sgou\amazon_review_full_csv\train.csv", nrows=5750)
+
+
+data = pd.DataFrame({
+    'rating': data.iloc[:, 0] ,     # First column from the CSV file ('rating')
+    'comments': data.iloc[:, 2]    # Third column from the CSV file ('comment')
+})
+
+doc = data['comments']
+
+
+
+
+
+
+# Function to generate document-level embeddings
+def get_doc_embedding(doc):
+    # Tokenize and preprocess the document
+    words = doc.split()  # You might have different tokenization methods
+    word_embeddings = []
+    
+    # Retrieve word vectors for each word and aggregate them
+    for word in words:
+        if word in word_vectors:
+            word_embeddings.append(word_vectors[word])
+    
+    # Calculate the mean of word vectors to obtain document-level embedding
+    if word_embeddings:
+        doc_embedding = np.mean(word_embeddings, axis=0)  # Calculate mean along the axis
+        return doc_embedding
+    else:
+        return np.zeros(100)  # Return zeros if no word vectors found
+
+# Example usage for a single document 'doc_text'
+text_list = doc.astype(str).tolist()
+doc = text_list[0]
+doc_embedding = get_doc_embedding(doc)
+print("Document-level embedding shape:", doc_embedding.shape)
+
+
+
+
+
+
+
+# Retrieve the top 5 word vectors along with their words\
+from gensim.models import Word2Vec
+top_n = 5
+top_words = word_vectors.index_to_key[:top_n]  # Get top_n words
+top_word_vectors = [word_vectors[word] for word in top_words]  # Get word vectors for top_n words
+
+# Display the top 5 words and their corresponding vectors
+for word, vector in zip(top_words, top_word_vectors):
+    print(f"Word: {word}, Vector: {vector}")
