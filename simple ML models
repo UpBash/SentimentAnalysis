@@ -1,0 +1,122 @@
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from math import sqrt
+from sklearn.exceptions import UndefinedMetricWarning
+import warnings
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report
+# Load the dataset
+data = pd.read_csv("p.csv", encoding='latin-1')
+
+# Create a DataFrame
+df = pd.DataFrame({
+    'polarity': data.iloc[:, -2],      # First column from the CSV file ('rating')
+    'comments': data.iloc[:, 2]        # Third column from the CSV file ('comment')
+})
+
+# Filter out 'unsup' instances
+df1 = df[df['polarity'] == 'unsup']
+df = df[df['polarity'] != 'unsup']
+
+# Map categorical labels to numerical values
+label_mapping = {'pos': 1, 'neg': 0}
+df['polarity'] = df['polarity'].map(label_mapping)
+
+# Split the data into training and testing sets
+train_df, test_df = train_test_split(df, test_size=0.2, random_state=42)
+
+# Text vectorization using TF-IDF
+vectorizer = TfidfVectorizer(max_features=1000)
+X_train = vectorizer.fit_transform(train_df['comments'])
+X_test = vectorizer.transform(test_df['comments'])
+
+y_train = train_df['polarity']
+y_test = test_df['polarity']
+
+# Initialize and train the Logistic Regression model
+classifier_rf = RandomForestClassifier(random_state=42)
+classifier_rf.fit(X_train, y_train)
+
+# Predict on the test set
+predictions_rf = classifier_rf.predict(X_test)
+
+# Regression Metrics
+mse = mean_squared_error(y_test, predictions)
+rmse = sqrt(mse)
+mae = mean_absolute_error(y_test, predictions)
+r2 = r2_score(y_test, predictions)
+
+print(f"Mean Squared Error (MSE): {mse:.2f}")
+print(f"Root Mean Squared Error (RMSE): {rmse:.2f}")
+print(f"Mean Absolute Error (MAE): {mae:.2f}")
+print(f"R-squared (R2): {r2:.2f}")
+
+# Classification Metrics
+with warnings.catch_warnings():
+    warnings.filterwarnings("ignore", category=UndefinedMetricWarning)
+
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, predictions)
+    print(f"Accuracy: {accuracy:.2f}")
+
+    # Print classification report
+    print("Classification Report:")
+    print(classification_report(y_test, predictions, zero_division=1))
+
+
+X_test = vectorizer.transform(df1['comments'])
+predictions = classifier.predict(X_test)
+
+
+
+# Assign the predicted labels to the 'polarity' column in df1
+df1['polarity'] = predictions
+
+df0 = pd.concat([df, df1], ignore_index=True)
+train_df, test_df = train_test_split(df0, test_size=0.2, random_state=42)
+
+vectorizer = TfidfVectorizer(max_features=1000)
+X_train = vectorizer.fit_transform(train_df['comments'])
+X_test = vectorizer.transform(test_df['comments'])
+
+y_train = train_df['polarity']
+y_test = test_df['polarity']
+
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from math import sqrt
+
+# Initialize and train the Random Forest Classifier
+classifier_rf = RandomForestClassifier(random_state=42)
+classifier_rf.fit(X_train, y_train)
+
+# Predict on the test set
+predictions_rf = classifier_rf.predict(X_test)
+
+# Regression Metrics for Random Forest Classifier
+mse_rf = mean_squared_error(y_test, predictions_rf)
+rmse_rf = sqrt(mse_rf)
+mae_rf = mean_absolute_error(y_test, predictions_rf)
+r2_rf = r2_score(y_test, predictions_rf)
+
+print("\nRandom Forest Classifier:")
+print(f"Mean Squared Error (MSE): {mse_rf:.2f}")
+print(f"Root Mean Squared Error (RMSE): {rmse_rf:.2f}")
+print(f"Mean Absolute Error (MAE): {mae_rf:.2f}")
+print(f"R-squared (R2): {r2_rf:.2f}")
+
+# Evaluate the model
+accuracy_rf = accuracy_score(y_test, predictions_rf)
+print(f"Accuracy: {accuracy_rf:.2f}")
+
+# Print classification report
+print("Classification Report:")
+print(classification_report(y_test, predictions_rf, zero_division=1))
+
